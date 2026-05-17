@@ -1,0 +1,28 @@
+name: FastAPI CI
+
+on:
+  push:
+    branches: 
+      -main
+
+jobs:
+  docker-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      
+      - name: Build Docker Image
+        run: docker build -t app .
+      - name: Run Container
+        run: docker run -d -p 8000:8000 --name app app
+
+      - name: Wait for app
+        run: sleep 5
+      
+      - name: Test Endpoint
+        run: curl http://localhost:8000
+
+      - name: Show Running Containers
+        run: docker ps
